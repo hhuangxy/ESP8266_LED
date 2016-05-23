@@ -1,7 +1,7 @@
 -- Setup website
 myWebsite = {}
 
--- Initilize variables
+-- Initialize variables
 myWebsite.debugFlag = false
 
 function myWebsite.setup()
@@ -52,7 +52,7 @@ function myWebsite.cbReceive(sk, payload)
     temp = payload:match("btnReboot")
     if temp ~= nil then
         sk:send("HTTP/1.1 204 No Content\r\n\r\n", function(sk) sk:close() end)
-        tmr.softwd(3)
+        tmr.softwd(2)
     end
 
     -- Find number of LEDs and colorCodes
@@ -67,7 +67,7 @@ function myWebsite.cbReceive(sk, payload)
         while true do
             temp = payload:match("numLED"..i.."=(%d+)")
             if temp ~= nil then
-                numLeds[i] = tonumber(temp)
+                numLeds[i] = temp
                 colorCodes[i] = payload:match("colorCode"..i.."=%%23(%x+)")
                 i = i + 1
             else

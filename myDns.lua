@@ -1,6 +1,27 @@
 -- Setup DNS server
 myDns = {}
 
+-- Initialize variables
+myDns.respHeader = {
+    transId = string.char(0x00, 0x00),
+
+    respFlagCodes = string.char(0x80, 0x00),
+    qCount = string.char(0x00, 0x01), -- 1 question
+    aCount = string.char(0x00, 0x01), -- 1 response
+    auCount = string.char(0x00, 0x00),
+    arCount = string.char(0x00, 0x00),
+
+    dnsQ =  string.char(0x00),
+
+    dNam = string.char(0xC0, 0x0C), -- Name is a pointer (0xC0),, at location 0x0C
+    dTyp = string.char(0x00, 0x01), -- Type is host address
+    dCla = string.char(0x00, 0x01), -- Class is internet address
+    dTtl = string.char(0x00, 0x00, 0x01, 0x00), -- TTL 256 seconds
+    dLen = string.char(0x00, 0x04), -- Length 4 bytes
+
+    respIp = string.char(0x00, 0x00, 0x00, 0x00)
+}
+
 function myDns.setup()
     if myDns.sv ~= nil then
         myDns.sv:close()
@@ -39,19 +60,17 @@ function myDns.decodePayload(pl)
 end
 
 function myDns.buildPayload(transId, dnsQ, respIp)
-    local respFlagCodes = string.char(0x80, 0x00)
-    local qCount = string.char(0x00, 0x01) -- 1 question
-    local aCount = string.char(0x00, 0x01) -- 1 response
-    local auCount = string.char(0x00, 0x00)
-    local arCount = string.char(0x00, 0x00)
-
-    local dNam = string.char(0xC0, 0x0C) -- Name is a pointer (0xC0), at location 0x0C
-    local dTyp = string.char(0x00, 0x01) -- Type is host address
-    local dCla = string.char(0x00, 0x01) -- Class is internet address
-    local dTtl = string.char(0x00, 0x00, 0x01, 0x00) -- TTL 256 seconds
-    local dLen = string.char(0x00, 0x04) -- Length 4 bytes
-
-    return transId..respFlagCodes..qCount..aCount..auCount..arCount..
+    return transId..
+        myDns.respHeader.respFlagCodes..
+        myDns.respHeader.qCount..
+        myDns.respHeader.aCount..
+        myDns.respHeader.auCount..
+        myDns.respHeader.arCount..
         dnsQ..
-        dNam..dTyp..dCla..dTtl..dLen..respIp
+        myDns.respHeader.dNam..
+        myDns.respHeader.dTyp..
+        myDns.respHeader.dCla..
+        myDns.respHeader.dTtl..
+        myDns.respHeader.dLen..
+        respIp
 end

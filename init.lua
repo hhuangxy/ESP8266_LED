@@ -1,7 +1,3 @@
--- Setup LEDs
-require("myLed")
-myLed.test(20)
-
 -- Setup WIFI
 require("myWifi")
 myWifi.setupAP()
@@ -13,3 +9,7 @@ myWebsite.setup()
 -- Setup DNS
 require("myDns")
 myDns.setup()
+
+-- Setup LEDs
+require("myLed")
+myLed.test(20)

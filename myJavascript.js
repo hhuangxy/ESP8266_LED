@@ -42,7 +42,7 @@ function addDiv(objDom, num) {
     newDiv.setAttribute("id", "div" + num);
 
     // Append elements
-    newDiv.appendChild(document.createTextNode("Color #" + num));
+    newDiv.appendChild(document.createTextNode("Colour #" + num));
     newDiv.appendChild(newBrk);
     newDiv.appendChild(document.createTextNode("Number of LEDs"));
     newDiv.appendChild(newNum);
