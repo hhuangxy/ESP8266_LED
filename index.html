@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="myCSS.css">
+        <script language="javascript" type="text/javascript" src="myJavascript.js"></script>
+    </head>
+
+   <body onload="initMiddle()">
+        <p>Number of Colours<input type="number" id="numColors" name="numColors" value="1" onchange="updateMiddle(this)"></p>
+        <form action="" method="POST">
+            <p id="middle"></p>
+            <p><input type="submit" name="btnSubmit" value="Submit"></p>
+        </form>
+        <hr>
+        <form action="" method="POST">
+            <p><input type="submit" name="btnReboot" value="Reboot"></p>
+        </form>
+   </body>
+</html>

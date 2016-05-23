@@ -1,0 +1,130 @@
+
+> arg[1]: 	GET / HTTP/1.1
+Host: 192.168.1.112
+Connection: keep-alive
+Cache-Control: max-age=0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36
+DNT: 1
+Accept-Encoding: gzip, deflate, sdch
+Accept-Language: en-US,en;q=0.8
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="myCSS.css">
+        <script language="javascript" type="text/javascript" src="myJavascript.js"></script>
+    </head>
+
+   <body onload="initMiddle()">
+        <p>Number of Colours<input type="number" id="numColors" name="numColors" value="1" onchange="updateMiddle(this)"></p>
+        <form action="" method="POST">
+            <p id="middle"></p>
+            <p><input type="submit" name="btnSubmit" value="Submit"></p>
+        </form>
+        <hr>
+        <form action="" method="POST">
+            <p><input type="submit" name="btnReboot" value="Reboot"></p>
+        </form>
+   </body>
+</html>
+
+arg[1]: 	GET /myCSS.css HTTP/1.1
+Host: 192.168.1.112
+Connection: keep-alive
+Accept: text/css,*/*;q=0.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36
+DNT: 1
+Referer: http://192.168.1.112/
+Accept-Encoding: gzip, deflate, sdch
+Accept-Language: en-US,en;q=0.8
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="myCSS.css">
+        <script language="javascript" type="text/javascript" src="myJavascript.js"></script>
+    </head>
+
+   <body onload="initMiddle()">
+        <p>Number of Colours<input type="number" id="numColors" name="numColors" value="1" onchange="updateMiddle(this)"></p>
+        <form action="" method="POST">
+            <p id="middle"></p>
+            <p><input type="submit" name="btnSubmit" value="Submit"></p>
+        </form>
+        <hr>
+        <form action="" method="POST">
+            <p><input type="submit" name="btnReboot" value="Reboot"></p>
+        </form>
+   </body>
+</html>
+
+arg[1]: 	GET /myJavascript.js HTTP/1.1
+Host: 192.168.1.112
+Connection: keep-alive
+Accept: */*
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36
+DNT: 1
+Referer: http://192.168.1.112/
+Accept-Encoding: gzip, deflate, sdch
+Accept-Language: en-US,en;q=0.8
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="myCSS.css">
+        <script language="javascript" type="text/javascript" src="myJavascript.js"></script>
+    </head>
+
+   <body onload="initMiddle()">
+        <p>Number of Colours<input type="number" id="numColors" name="numColors" value="1" onchange="updateMiddle(this)"></p>
+        <form action="" method="POST">
+            <p id="middle"></p>
+            <p><input type="submit" name="btnSubmit" value="Submit"></p>
+        </form>
+        <hr>
+        <form action="" method="POST">
+            <p><input type="submit" name="btnReboot" value="Reboot"></p>
+        </form>
+   </body>
+</html>
+
+arg[1]: 	GET /favicon.ico HTTP/1.1
+Host: 192.168.1.112
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36
+Accept: */*
+DNT: 1
+Referer: http://192.168.1.112/
+Accept-Encoding: gzip, deflate, sdch
+Accept-Language: en-US,en;q=0.8
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="myCSS.css">
+        <script language="javascript" type="text/javascript" src="myJavascript.js"></script>
+    </head>
+
+   <body onload="initMiddle()">
+        <p>Number of Colours<input type="number" id="numColors" name="numColors" value="1" onchange="updateMiddle(this)"></p>
+        <form action="" method="POST">
+            <p id="middle"></p>
+            <p><input type="submit" name="btnSubmit" value="Submit"></p>
+        </form>
+        <hr>
+        <form action="" method="POST">
+            <p><input type="submit" name="btnReboot" value="Reboot"></p>
+        </form>
+   </body>
+</html>
+

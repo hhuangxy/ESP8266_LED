@@ -1,0 +1,12 @@
+input[type="number"] {
+    margin-left: 5px;
+    width: 60px;
+}
+
+input[type="color"] {
+    margin-left: 5px;
+}
+
+div {
+    margin-bottom: 10px;
+}
