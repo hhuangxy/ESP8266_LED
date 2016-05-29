@@ -21,41 +21,43 @@ myLed.gammaTable = {
     215, 218, 220, 223, 225, 228, 231, 233, 236, 239, 241, 244, 247, 249, 252, 255
 }
 
+myLed.maxLeds = 20
+
 -- LED test on bootup
-function myLed.test(numLeds)
+function myLed.test()
     local r,g,b
-    local ledTbl = {}
+    local numLeds = myLed.maxLeds
     local timeOut = 100000
 
     ws2812.init()
-    ws2812.write(string.char(0,0,0):rep(numLeds))
+    ws2812.write(string.rep("\000\000\000", numLeds))
 
     for k=1,3 do
         if k == 1 then
-            r = 255; g = 0; b = 0
+            r,g,b = 255,0,0
         elseif k == 2 then
-            r = 0; g = 255; b = 0
+            r,g,b = 0,255,0
         else
-            r = 0; g = 0; b = 255
+            r,g,b = 0,0,255
         end
 
         for i=1,numLeds do
-            ledTbl = {}
-            table.insert(ledTbl, string.char(0,0,0):rep(i-1))
-            table.insert(ledTbl, string.char(r,g,b))
-            table.insert(ledTbl, string.char(0,0,0):rep(numLeds-i))
-
-            ws2812.write(table.concat(ledTbl))
+            ws2812.write(
+                string.rep("\000\000\000", i-1)..
+                string.char(r,g,b)..
+                string.rep("\000\000\000", numLeds-i)
+            )
             tmr.delay(timeOut)
         end
     end
 
-    ws2812.write(string.char(0,0,0):rep(numLeds))
+    ws2812.write(string.rep("\000\000\000", numLeds))
 end
 
 -- Control LEDs through website
 function myLed.write(numColors, numLeds, colorCodes)
     local r,g,b
+    local nLeds,tLeds = 0,0
     local ledTbl = {}
 
     for i=1,numColors do
@@ -69,7 +71,14 @@ function myLed.write(numColors, numLeds, colorCodes)
         b = "0x"..(colorCodes[i]:sub(5,6) or 0)
         b = myLed.gammaTable[b+1]
 
-        table.insert(ledTbl, string.char(r,g,b):rep(numLeds[i] or 0))
+        nLeds = numLeds[i] or 0
+        tLeds = tLeds + nLeds
+        table.insert(ledTbl, string.char(r,g,b):rep(nLeds))
+    end
+
+    -- Blank LEDs
+    if tLeds < myLed.maxLeds then
+        table.insert(ledTbl, string.rep("\000\000\000", myLed.maxLeds-tLeds))
     end
 
     ws2812.write(table.concat(ledTbl))
