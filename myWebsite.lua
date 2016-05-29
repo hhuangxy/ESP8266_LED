@@ -20,7 +20,7 @@ function myWebsite.debugPrint(...)
     if myWebsite.debugFlag == true then
         for i=1,#arg do
             if type(arg[i]) == "table" then
-                for k,v in pairs(arg[i]) do
+                for k,v in ipairs(arg[i]) do
                     print("arg["..i.."]: ", k, v)
                 end
             else
@@ -42,9 +42,14 @@ function myWebsite.cbReceive(sk, payload)
     temp = payload:match("GET /([^%s/]*) HTTP/1.1")
     if temp ~= nil then
         if temp == "" then
+            -- Send homepage
             myWebsite.sendFile(sk, "index.html")
-        else
+        elseif #temp < 20 then
+            -- Assume that max filename length is < 20
             myWebsite.sendFile(sk, temp)
+        else
+            -- Send 404
+            sk:send("HTTP/1.1 404 Not Found\r\n\r\n", function(sk) sk:close() end)
         end
     end
 
@@ -63,13 +68,11 @@ function myWebsite.cbReceive(sk, payload)
         local colorCodes = {}
 
         -- Fill tables
-        local i = 1
-        while true do
+        for i=1,512 do
             temp = payload:match("numLED"..i.."=(%d+)")
             if temp ~= nil then
                 numLeds[i] = temp
                 colorCodes[i] = payload:match("colorCode"..i.."=%%23(%x+)")
-                i = i + 1
             else
                 break
             end

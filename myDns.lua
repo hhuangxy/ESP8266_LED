@@ -3,23 +3,23 @@ myDns = {}
 
 -- Initialize variables
 myDns.respHeader = {
-    transId = string.char(0x00, 0x00),
+    transId = "\000\000",
 
-    respFlagCodes = string.char(0x80, 0x00),
-    qCount = string.char(0x00, 0x01), -- 1 question
-    aCount = string.char(0x00, 0x01), -- 1 response
-    auCount = string.char(0x00, 0x00),
-    arCount = string.char(0x00, 0x00),
+    respFlagCodes = "\128\000",
+    qCount  = "\000\001", -- 1 question
+    aCount  = "\000\001", -- 1 response
+    auCount = "\000\000",
+    arCount = "\000\000",
 
-    dnsQ =  string.char(0x00),
+    dnsQ =  "\000",
 
-    dNam = string.char(0xC0, 0x0C), -- Name is a pointer (0xC0),, at location 0x0C
-    dTyp = string.char(0x00, 0x01), -- Type is host address
-    dCla = string.char(0x00, 0x01), -- Class is internet address
-    dTtl = string.char(0x00, 0x00, 0x01, 0x00), -- TTL 256 seconds
-    dLen = string.char(0x00, 0x04), -- Length 4 bytes
+    dNam = "\192\012", -- Name is a pointer (0xC0) at location 0x0C
+    dTyp = "\000\001", -- Type is host address
+    dCla = "\000\001", -- Class is internet address
+    dTtl = "\000\000\001\000", -- TTL 256 seconds
+    dLen = "\000\004", -- Length 4 bytes
 
-    respIp = string.char(0x00, 0x00, 0x00, 0x00)
+    respIp = "\000\000\000\000"
 }
 
 function myDns.setup()
@@ -29,17 +29,15 @@ function myDns.setup()
 
     -- Get response IP and encode it
     local respIp = wifi.ap.getip()
-    local ip1, ip2, ip3, ip4
-    ip1, ip2, ip3, ip4 = respIp:match("(%d+).(%d+).(%d+).(%d+)")
-    myDns.respIp = string.char(ip1, ip2, ip3, ip4)
+    local ip1, ip2, ip3, ip4 = respIp:match("(%d+).(%d+).(%d+).(%d+)")
+    myDns.respHeader.respIp = string.char(ip1, ip2, ip3, ip4)
 
     myDns.sv = net.createServer(net.UDP)
 
     myDns.sv:on("receive",
         function(sv,pl)
-            local transId, dnsQ
-            transId, dnsQ = myDns.decodePayload(pl)
-            sv:send(myDns.buildPayload(transId, dnsQ, myDns.respIp))
+            local transId, dnsQ = myDns.decodePayload(pl)
+            sv:send(myDns.buildPayload(transId, dnsQ))
         end
     )
 
@@ -52,14 +50,13 @@ function myDns.decodePayload(pl)
 
     -- DNS query starts at byte 13
     local dnsQSt = 13
-    local dnsQEnC = string.char(0)
-    local dnsQEn = pl:find(dnsQEnC, dnsQSt, true)
-    local dnsQ = pl:sub(dnsQSt, dnsQEn+4) -- Add remaining 4 bytes for query type and class
+    local dnsQEn = pl:find("\000", dnsQSt, true)
+    local dnsQ   = pl:sub(dnsQSt, dnsQEn+4) -- Add remaining 4 bytes for query type and class
 
     return transId, dnsQ
 end
 
-function myDns.buildPayload(transId, dnsQ, respIp)
+function myDns.buildPayload(transId, dnsQ)
     return transId..
         myDns.respHeader.respFlagCodes..
         myDns.respHeader.qCount..
@@ -72,5 +69,5 @@ function myDns.buildPayload(transId, dnsQ, respIp)
         myDns.respHeader.dCla..
         myDns.respHeader.dTtl..
         myDns.respHeader.dLen..
-        respIp
+        myDns.respHeader.respIp
 end
