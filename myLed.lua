@@ -21,13 +21,13 @@ myLed.gammaTable = {
     215, 218, 220, 223, 225, 228, 231, 233, 236, 239, 241, 244, 247, 249, 252, 255
 }
 
-myLed.maxLeds = 20
+myLed.maxLeds = 27
 
 -- LED test on bootup
 function myLed.test()
     local r,g,b
     local numLeds = myLed.maxLeds
-    local timeOut = 100000
+    local timeOut = 75000
 
     ws2812.init()
     ws2812.write(string.rep("\000\000\000", numLeds))

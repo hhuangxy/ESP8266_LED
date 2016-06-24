@@ -4,6 +4,13 @@ myWebsite = {}
 -- Initialize variables
 myWebsite.debugFlag = false
 
+myWebsite.cbStates = {
+    default = 0,
+    submit  = 1,
+    website = 2,
+    reboot  = 3
+}
+
 function myWebsite.setup()
     if myWebsite.sv ~= nil then
         myWebsite.sv:close()
@@ -35,34 +42,27 @@ function myWebsite.cbListen(sk)
 end
 
 function myWebsite.cbReceive(sk, payload)
-    local temp
+    local temp, state
     myWebsite.debugPrint("cbReceive", payload)
 
-    -- Serve webpage/files
+    -- Determine state
     temp = payload:match("GET /([^%s/]*) HTTP/1.1")
     if temp ~= nil then
-        if temp == "" then
-            -- Send homepage
-            myWebsite.sendFile(sk, "index.html")
-        elseif #temp < 20 then
-            -- Assume that max filename length is < 20
-            myWebsite.sendFile(sk, temp)
-        else
-            -- Send 404
-            sk:send("HTTP/1.1 404 Not Found\r\n\r\n", function(sk) sk:close() end)
-        end
+        state = myWebsite.cbStates["website"]
+
+    elseif payload:match("btnSubmit") ~= nil then
+        state = myWebsite.cbStates["submit"]
+
+    elseif payload:match("btnReboot") ~= nil then
+        state = myWebsite.cbStates["reboot"]
+
+    else
+        state = myWebsite.cbStates["default"]
     end
 
-    -- Reboot button was pressed
-    temp = payload:match("btnReboot")
-    if temp ~= nil then
-        sk:send("HTTP/1.1 204 No Content\r\n\r\n", function(sk) sk:close() end)
-        tmr.softwd(2)
-    end
-
-    -- Find number of LEDs and colorCodes
-    temp = payload:match("btnSubmit")
-    if temp ~= nil then
+    -- Execute state
+    if state == myWebsite.cbStates["submit"] then
+        -- Find number of LEDs and colorCodes
         local numColors = 0
         local numLeds = {}
         local colorCodes = {}
@@ -85,6 +85,27 @@ function myWebsite.cbReceive(sk, payload)
         myLed.write(numColors, numLeds, colorCodes)
 
         sk:send("HTTP/1.1 204 No Content\r\n\r\n", function(sk) sk:close() end)
+
+    elseif state == myWebsite.cbStates["website"] then
+        -- Serve webpage/files
+        if temp == "" then
+            -- Send homepage
+            myWebsite.sendFile(sk, "index.html")
+        elseif #temp < 20 then
+            -- Assume that max filename length is < 20
+            myWebsite.sendFile(sk, temp)
+        else
+            -- Send 404
+            sk:send("HTTP/1.1 404 Not Found\r\n\r\n", function(sk) sk:close() end)
+        end
+
+    elseif state == myWebsite.cbStates["reboot"] then
+        -- Reboot button was pressed
+        sk:send("HTTP/1.1 204 No Content\r\n\r\n", function(sk) sk:close() end)
+        tmr.alarm(0, 2000, tmr.ALARM_SINGLE, function() node.restart() end)
+
+    else
+        sk:send("HTTP/1.1 404 Not Found\r\n\r\n", function(sk) sk:close() end)
     end
 end
 

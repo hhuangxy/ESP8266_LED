@@ -3,41 +3,68 @@ myWifi = {}
 
 function myWifi.setupAP()
     local cfg = {}
+    local mode, ssid, pwd, ip, netmask, gateway
 
     wifi.sta.disconnect()
 
+    wifi.setphymode(wifi.PHYMODE_G)
+    wifi.sleeptype(wifi.MODEM_SLEEP)
+
+    mode = wifi.getmode()
+    if mode ~= wifi.SOFTAP then
+        wifi.setmode(wifi.SOFTAP)
+    end
+
     cfg = {
-        ssid = "ESP8266",
-        pwd = "asdfasdf"
+        ssid = "ESP8266_LED",
+        pwd = "ESP8266_LED"
     }
-    wifi.ap.config(cfg)
+    ssid, pwd = wifi.ap.getconfig()
+    if ssid ~= cfg.ssid or
+       pwd  ~= cfg.pwd then
+
+        wifi.ap.config(cfg)
+    end
 
     cfg = {
         ip = "192.168.1.1",
         netmask = "255.255.255.0",
         gateway = "192.168.1.1"
     }
-    wifi.ap.setip(cfg)
+    ip, netmask, gateway = wifi.ap.getip()
+    if ip      ~= cfg.ip or
+       netmask ~= cfg.netmask or
+       gateway ~= cfg.gateway then
 
-    wifi.setphymode(wifi.PHYMODE_G)
-    wifi.sleeptype(wifi.MODEM_SLEEP)
-    wifi.setmode(wifi.SOFTAP)
+        wifi.ap.setip(cfg)
+    end
 end
 
 function myWifi.setupSTA()
     local cfg = {}
+    local mode, ssid, pwd
 
     wifi.sta.disconnect()
 
-    wifi.setphymode(wifi.PHYMODE_G)
+    wifi.setphymode(wifi.PHYMODE_N)
     wifi.sleeptype(wifi.MODEM_SLEEP)
-    wifi.setmode(wifi.STATION)
+
+    mode = wifi.getmode()
+    if mode ~= wifi.STATION then
+        wifi.setmode(wifi.STATION)
+    end
 
     cfg = {
-        ssid = "",
-        pwd = "",
-        hostname = ""
+        ssid = "ABCD1234",
+        pwd = "ABCD1234",
+        hostname = "ABCD1234"
     }
     wifi.sta.sethostname(cfg.hostname)
-    wifi.sta.config(cfg.ssid, cfg.pwd)
+
+    ssid, pwd = wifi.sta.getconfig()
+    if ssid ~= cfg.ssid or
+       pwd  ~= cfg.pwd then
+
+        wifi.sta.config(cfg.ssid, cfg.pwd)
+    end
 end

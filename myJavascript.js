@@ -10,7 +10,7 @@ function initMiddle() {
 }
 
 function updateMiddle(self) {
-    var num = validateNum(self, 1);
+    var num = validateNum(self, 1, 20);
 
     while (num > numColors) {
         numColors++;
@@ -32,7 +32,7 @@ function addDiv(objDom, num) {
     // Set attributes
     newNum.setAttribute("type", "number");
     newNum.setAttribute("name", "numLED" + num);
-    newNum.setAttribute("onchange", "validateNum(this, 0)");
+    newNum.setAttribute("onchange", "validateNum(this, 0, 27)");
     newNum.setAttribute("value", 0);
 
     newClr.setAttribute("type", "color");
@@ -56,9 +56,13 @@ function remDiv(objDom) {
     objDom.removeChild(lastChild)
 }
 
-function validateNum(self, min) {
+function validateNum(self, min, max) {
     if (self.value < min) {
         self.value = min;
+    }
+
+    if (self.value > max) {
+        self.value = max;
     }
 
     return self.value;
