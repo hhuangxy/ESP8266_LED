@@ -12,4 +12,4 @@ myDns.setup()
 
 -- Setup LEDs
 require("myLed")
-myLed.test()
+myLed.setup()

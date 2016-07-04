@@ -1,21 +1,54 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title></title>
-        <link rel="stylesheet" type="text/css" href="myCSS.css">
-        <script language="javascript" type="text/javascript" src="myJavascript.js"></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    </head>
+  <head>
+    <title>D&D</title>
+    <link rel="stylesheet" type="text/css" href="myCSS.css">
+    <script language="javascript" type="text/javascript" src="myJavascript.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  </head>
 
-   <body onload="initMiddle()">
-        <p>Number of Colours<input type="number" id="numColors" name="numColors" value="1" onchange="updateMiddle(this)"></p>
-        <form action="" method="POST">
-            <p id="middle"></p>
-            <p><input type="submit" name="btnSubmit" value="Submit"></p>
-        </form>
-        <hr>
-        <form action="" method="POST">
-            <p><input type="submit" name="btnReboot" value="Reboot"></p>
-        </form>
-   </body>
+  <body onload="init()">
+    <ul class="tab">
+      <li><a href="#" class="tablinks active" onclick="openCity(event, 'all')">All</a></li>
+      <li><a href="#" class="tablinks" onclick="openCity(event, 'eachLetter')">Each Letter</a></li>
+      <li><a href="#" class="tablinks" onclick="openCity(event, 'advance')">Advance</a></li>
+      <li><a href="#" class="tablinks" onclick="openCity(event, 'misc')">Misc</a></li>
+    </ul>
+
+    <div id="all" class="tabcontent">
+      <h3>Set one colour for all LEDs</h3>
+      <form method="POST">
+        <p><input type="color" name="colorCodeAll" value="#000000"></p>
+        <p><input type="submit" name="btnSubmit" value="Submit"></p>
+      </form>
+    </div>
+
+    <div id="eachLetter" class="tabcontent">
+      <h3>Set a colour for each letter</h3>
+      <form method="POST">
+        <p>D<input type="color" name="colorCodeD1" value="#000000"></p>
+        <p>&amp;<input type="color" name="colorCodeD2" value="#000000"></p>
+        <p>D<input type="color" name="colorCodeD3" value="#000000"></p>
+        <p><input type="submit" name="btnSubmit" value="Submit"></p>
+      </form>
+    </div>
+
+    <div id="advance" class="tabcontent">
+      <h3>Set a colour for each LED</h3>
+      <p>Number of Colours<input type="number" id="numColors" name="numColors" value="1" onchange="updateMiddle(this)"></p>
+      <form method="POST">
+        <p id="middle"></p>
+        <p><input type="submit" name="btnSubmit" value="Submit"></p>
+      </form>
+    </div>
+
+    <div id="misc" class="tabcontent">
+      <h3>Miscellaneous functions</h3>
+      <form method="POST">
+        <p><input type="submit" name="btnTest" value="Test Pattern"></p>
+        <p><input type="submit" name="btnReboot" value="Reboot"></p>
+      </form>
+    </div>
+
+  </body>
 </html>
