@@ -40,48 +40,68 @@ myLed.tstPat = {
 }
 function myLed.testPatt()
   -- Init
-  if myLed.tstPat.state == "last" then
-    myLed.tstPat.state = "off"
+  local i,j
+  local tstPat = myLed.tstPat
+
+  if tstPat.state == "last" then
+    tstPat.state = "off"
     myLed.buf:fill(0,0,0)
     myLed.buf:write()
     return
-  elseif myLed.tstPat.state == "off" then
-    myLed.tstPat.state = "on"
-    myLed.tstPat.i = 1
-    myLed.tstPat.j = 1
+  elseif tstPat.state == "off" then
+    tstPat.state = "fwd"
     myLed.buf:fill(0,0,0)
+    tstPat.i,tstPat.j = 1,1
   end
 
-  local r,g,b
-  local i,j = myLed.tstPat.i, myLed.tstPat.j
+  i,j = tstPat.i,tstPat.j
 
   -- R, G, or B?
   if i == 1 then
-    r,g,b = 255,0,0
+    myLed.buf:set(j,255,0,0)
   elseif i == 2 then
-    r,g,b = 0,255,0
+    myLed.buf:set(j,0,255,0)
+  elseif i == 3 then
+    myLed.buf:set(j,0,0,255)
   else
-    r,g,b = 0,0,255
+    myLed.buf:set(j,0,0,0)
   end
 
-  -- Send out
-  myLed.buf:set(j,r,g,b)
   myLed.buf:write()
 
   -- Determine next state
-  if j == myLed.buf:size() then
-    if i == 3 then
-      myLed.tstPat.state = "last"
+  if i == 4 and j == 1 then
+    tstPat.state = "last"
+
+  elseif tstPat.state == "fwd" then
+    if j == myLed.buf:size() then
+      tstPat.state = "hold"
+      tstPat.i = i + 1
     else
-      myLed.tstPat.j = 1
-      myLed.tstPat.i = i + 1
+      tstPat.j = j + 1
     end
-  else
-    myLed.tstPat.j = j + 1
+
+  elseif tstPat.state == "bwd" then
+    if j == 1 then
+      tstPat.state = "hold"
+      tstPat.i = i + 1
+    else
+      tstPat.j = j - 1
+    end
+
+  elseif tstPat.state == "hold" then
+    if j == 1 then
+      tstPat.state = "fwd"
+      tstPat.j = j + 1
+    else
+      tstPat.state = "bwd"
+      tstPat.j = j - 1
+    end
+
   end
 
-  -- Re-arm
-  tmr.alarm(0, myLed.tstPat.timeout, tmr.ALARM_SINGLE, function() myLed.testPatt() end)
+  -- Arm
+  tmr.alarm(0, tstPat.timeout, tmr.ALARM_SINGLE, function() myLed.testPatt() end)
 end
 
 -- Control LEDs through website

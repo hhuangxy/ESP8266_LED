@@ -57,17 +57,20 @@ function myDns.decodePayload(pl)
 end
 
 function myDns.buildPayload(transId, dnsQ)
+  -- DO NOT OPTIMIZE
+  -- THIS IS FASTER THAN TABLE.CONCAT()
+  local t = myDns.respHeader
   return transId..
-    myDns.respHeader.respFlagCodes..
-    myDns.respHeader.qCount..
-    myDns.respHeader.aCount..
-    myDns.respHeader.auCount..
-    myDns.respHeader.arCount..
+    t.respFlagCodes..
+    t.qCount..
+    t.aCount..
+    t.auCount..
+    t.arCount..
     dnsQ..
-    myDns.respHeader.dNam..
-    myDns.respHeader.dTyp..
-    myDns.respHeader.dCla..
-    myDns.respHeader.dTtl..
-    myDns.respHeader.dLen..
-    myDns.respHeader.respIp
+    t.dNam..
+    t.dTyp..
+    t.dCla..
+    t.dTtl..
+    t.dLen..
+    t.respIp
 end

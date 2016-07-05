@@ -4,14 +4,6 @@ myWebsite = {}
 -- Initialize variables
 myWebsite.debugFlag = false
 
-myWebsite.cbStates = {
-  default = 0,
-  submit  = 1,
-  website = 2,
-  test    = 3,
-  reboot  = 4
-}
-
 function myWebsite.setup()
   if myWebsite.sv ~= nil then
     myWebsite.sv:close()
@@ -28,8 +20,8 @@ function myWebsite.debugPrint(...)
   if myWebsite.debugFlag == true then
     for i=1,#arg do
       if type(arg[i]) == "table" then
-        for k,v in ipairs(arg[i]) do
-          print("arg["..i.."]: ", k, v)
+        for k=1,#arg[i] do
+          print("arg["..i.."]: ", k, arg[i][k])
         end
       else
         print("arg["..i.."]: ", arg[i])
@@ -49,29 +41,29 @@ function myWebsite.cbReceive(sk, payload)
   -- Determine state
   temp = payload:match("GET /([^%s/]*) HTTP/1.1")
   if temp ~= nil then
-    state = myWebsite.cbStates["website"]
+    state = "website"
 
   elseif payload:match("btnSubmit") ~= nil then
-    state = myWebsite.cbStates["submit"]
+    state = "submit"
 
   elseif payload:match("btnTest") ~= nil then
-    state = myWebsite.cbStates["test"]
+    state = "test"
 
   elseif payload:match("btnReboot") ~= nil then
-    state = myWebsite.cbStates["reboot"]
+    state = "reboot"
 
   else
-    state = myWebsite.cbStates["default"]
+    state = "default"
   end
 
   -- Execute state
-  if state == myWebsite.cbStates["submit"] then
+  if state == "submit" then
     -- Find number of LEDs and colorCodes
     local numColors = 0
     local numLeds = {}
     local colorCodes = {}
 
-    for t in ipairs({1}) do
+    for t=1,1 do
       -- All LEDs
       temp = payload:match("colorCodeAll=%%23(%x+)")
       if temp ~= nil then
@@ -102,8 +94,7 @@ function myWebsite.cbReceive(sk, payload)
           break
         end
       end
-
-    end
+    end -- End of t
 
     numColors = #numLeds
 
@@ -113,7 +104,7 @@ function myWebsite.cbReceive(sk, payload)
 
     sk:send("HTTP/1.1 204 No Content\r\n\r\n", function(sk) sk:close() end)
 
-  elseif state == myWebsite.cbStates["website"] then
+  elseif state == "website" then
     -- Serve webpage/files
     if temp == "" then
       -- Send homepage
@@ -126,15 +117,23 @@ function myWebsite.cbReceive(sk, payload)
       sk:send("HTTP/1.1 404 Not Found\r\n\r\n", function(sk) sk:close() end)
     end
 
-  elseif state == myWebsite.cbStates["test"] then
+  elseif state == "test" then
     -- Test pattern button was pressed
-    sk:send("HTTP/1.1 204 No Content\r\n\r\n", function(sk) sk:close() end)
-    tmr.alarm(0, 1000, tmr.ALARM_SINGLE, function() myLed.testPatt() end)
+    sk:send("HTTP/1.1 204 No Content\r\n\r\n",
+      function(sk)
+        sk:close()
+        myLed.testPatt()
+      end
+    )
 
-  elseif state == myWebsite.cbStates["reboot"] then
+  elseif state == "reboot" then
     -- Reboot button was pressed
-    sk:send("HTTP/1.1 204 No Content\r\n\r\n", function(sk) sk:close() end)
-    tmr.alarm(0, 1000, tmr.ALARM_SINGLE, function() node.restart() end)
+    sk:send("HTTP/1.1 204 No Content\r\n\r\n",
+      function(sk)
+        sk:close()
+        node.restart()
+      end
+    )
 
   else
     sk:send("HTTP/1.1 404 Not Found\r\n\r\n", function(sk) sk:close() end)
